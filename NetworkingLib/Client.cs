@@ -47,9 +47,9 @@ namespace NetworkingLib
             this.argSplitter = argSplitter;
         }
 
-        public long Connect()
+        public bool Connect(out long pingMs)
         {
-            long pingMs = 0;
+            pingMs = 0;
             try
             {
                 client = new TcpClient();
@@ -63,8 +63,9 @@ namespace NetworkingLib
             catch
             {
                 ConnectionLostRaise();
+                return false;
             }
-            return pingMs;
+            return true;
         }
 
         public bool ConnectLobby(out long pingMs)
