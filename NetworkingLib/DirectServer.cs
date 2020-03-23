@@ -7,6 +7,7 @@ namespace NetworkingLib
 {
     public class DirectServer
     {
+        public const int SIO_UDP_CONNRESET = -1744830452;
         public delegate void ReceivedEventHandler(string[] data, string ip, int port);
         public delegate void ClientDisconnectedEventHandler(string ip, int port);
         public event ReceivedEventHandler OnReceivedEvent;
@@ -23,15 +24,20 @@ namespace NetworkingLib
         public void Start()
         {
             server = new UdpClient(port);
+            server.Client.IOControl(
+    (IOControlCode)SIO_UDP_CONNRESET,
+    new byte[] { 0, 0, 0, 0 },
+    null
+);
             new Thread(new ThreadStart(TryToReceive)).Start();
         }
 
         byte[] dataReceived = new byte[1024];
         private void TryToReceive()
         {
+            IPEndPoint remoteIp = new IPEndPoint(IPAddress.Any, port);
             while (true)
             {
-                IPEndPoint remoteIp = new IPEndPoint(IPAddress.Any, port);
                 try
                 {
                     dataReceived = server.Receive(ref remoteIp);
@@ -42,9 +48,8 @@ namespace NetworkingLib
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     OnClientDisconnectedEvent?.Invoke(remoteIp.Address.ToString(), remoteIp.Port);
-                    break;
+                    Console.WriteLine(e);
                 }
             }
         }
