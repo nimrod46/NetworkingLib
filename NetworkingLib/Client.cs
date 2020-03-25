@@ -88,14 +88,14 @@ namespace NetworkingLib
         }
 
 
-        public void Send(string[] args)
+        public void Send(object[] args)
         {
             string data = "";
             if (!client.Connected)
             {
                 return;
             }
-            foreach (string arg in args)
+            foreach (object arg in args)
             {
                 data += arg + argSplitter.ToString();
             }

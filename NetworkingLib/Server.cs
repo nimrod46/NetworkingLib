@@ -101,7 +101,7 @@ namespace NetworkingLib
             }
         }
 
-        public void SendToAUser(string[] args, string ip, int port)
+        public void SendToAUser(object[] args, string ip, int port)
         {
             TcpClient client = GetClient(ip, port);
             if (client == null)
@@ -110,7 +110,7 @@ namespace NetworkingLib
                 return;
             }
             string data = "";
-            foreach (string arg in args)
+            foreach (object arg in args)
             {
                 data += arg + argSplitter.ToString();
             }
@@ -127,7 +127,7 @@ namespace NetworkingLib
 
         }
 
-        public void Broadcast(string[] args, params int[] ports)
+        public void Broadcast(object[] args, params int[] ports)
         {
             TcpClient client = null;
             List<int> portsList = null;
@@ -140,7 +140,7 @@ namespace NetworkingLib
                 portsList = ports.ToList();
             }
             string data = "";
-            foreach (string arg in args)
+            foreach (object arg in args)
             {
                 data += arg + argSplitter.ToString();
             }

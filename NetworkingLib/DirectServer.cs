@@ -54,12 +54,12 @@ namespace NetworkingLib
             }
         }
 
-        public void Send(string[] args, string ip, int port)
+        public void Send(object[] args, string ip, int port)
         {
             IPAddress ipA = IPAddress.Parse(ip);
             IPEndPoint remoteIp = new IPEndPoint(ipA, port);
             string data = "";
-            foreach (string arg in args)
+            foreach (object arg in args)
             {
                 data += arg + argSplitter.ToString();
             }

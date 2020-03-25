@@ -70,10 +70,10 @@ namespace NetworkingLib
                 }
             }
         }
-        public void Send(int packetID, string[] args)
+        public void Send(object[] args)
         {
             string data = "";
-            foreach (string arg in args)
+            foreach (object arg in args)
             {
                 data += arg + argSplitter.ToString();
             }
