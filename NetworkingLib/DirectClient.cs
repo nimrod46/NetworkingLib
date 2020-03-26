@@ -8,7 +8,7 @@ namespace NetworkingLib
 {
     public class DirectClient
     {
-        public delegate void ReceivedEventHandler(string[] data, string address, int port);
+        public delegate void ReceivedEventHandler(object[] data, string address, int port);
         public event ReceivedEventHandler OnReceivedEvent;
         public delegate void ServerDisconnectedEventHandler(string ip, int port);
         public event ServerDisconnectedEventHandler OnServerDisconnectedEvent;
@@ -57,9 +57,9 @@ namespace NetworkingLib
             {
                 try
                 {
-                    string arg = Encoding.Unicode.GetString(client.Receive(ref server));
-                    string[] args;
-                    args = arg.Split(argSplitter);
+                    object arg = Encoding.Unicode.GetString(client.Receive(ref server));
+                    object[] args;
+                    args = arg.ToString().Split(argSplitter);
                     OnReceivedEvent?.Invoke(args, server.Address.ToString(), server.Port);
                 }
                 catch (Exception e)

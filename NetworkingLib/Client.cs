@@ -15,7 +15,7 @@ namespace NetworkingLib
 
     public class Client
     {
-        public delegate void ReceivedEventHandler(string[][] data, string ip, int port);
+        public delegate void ReceivedEventHandler(object[][] data, string ip, int port);
         public delegate void ConnectionLostEventHandler(string ip, int port);
         public event ConnectionLostEventHandler OnConnectionLostEvent;
         public event ReceivedEventHandler OnReceivedEvent;
@@ -126,11 +126,11 @@ namespace NetworkingLib
                 {
                     byte[] b = new byte[1024 * 8];
                     int i = lobbyInfoStream.Read(b, 0, b.Length);
-                    string[] packets = packetManager.AddStream(b, i, packetSplitter);
-                    string[][] packetsArgs = new string[packets.Length][];
+                    object[] packets = packetManager.AddStream(b, i, packetSplitter);
+                    object[][] packetsArgs = new object[packets.Length][];
                     for (int j = 0; j < packetsArgs.Length; j++)
                     {
-                        packetsArgs[j] = packets[j].Split(argSplitter);
+                        packetsArgs[j] = packets[j].ToString().Split(argSplitter);
                     }
                     OnReceivedEvent?.Invoke(packetsArgs, ServerIp, ServerPort);
                 }

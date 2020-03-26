@@ -12,7 +12,7 @@ namespace NetworkingLib
 
     public class Server
     {
-        public delegate void ReceivedEventHandler(string[][] data, string ip, int port);
+        public delegate void ReceivedEventHandler(object[][] data, string ip, int port);
         public delegate void ConnectionLostEventHandler(string ip, int port);
         public delegate void ConnectionAcceptedEventHandler(string ip, int port, long ping);
         public delegate void ConnectionLobbyAcceptedEventHandler(string ip, int port, long ping);
@@ -186,11 +186,11 @@ namespace NetworkingLib
                 {
                     continue;
                 }
-                string[] packets = packetManager.AddStream(b, i, packetSplitter);
-                string[][] packetsArgs = new string[packets.Length][];
+                object[] packets = packetManager.AddStream(b, i, packetSplitter);
+                object[][] packetsArgs = new object[packets.Length][];
                 for (int j = 0; j < packetsArgs.Length; j++)
                 {
-                    packetsArgs[j] = packets[j].Split(argSplitter);
+                    packetsArgs[j] = packets[j].ToString().Split(argSplitter);
                 }
                 OnReceivedEvent?.Invoke(packetsArgs, ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString(), ((IPEndPoint)client.Client.RemoteEndPoint).Port);
             }
