@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Drawing;
 using System.Threading;
+using static NetworkingLib.Server;
 
 namespace NetworkingLib
 {
@@ -20,6 +21,7 @@ namespace NetworkingLib
         public event ConnectionLostEventHandler OnConnectionLostEvent;
         public event ReceivedEventHandler OnReceivedEvent;
 
+        public EndPointId endPointId;
         public readonly string ServerIp;
         public readonly int ServerPort;
         public bool isConnected = false;
@@ -47,9 +49,10 @@ namespace NetworkingLib
             this.argSplitter = argSplitter;
         }
 
-        public bool Connect(out long pingMs)
+        public bool Connect(out long pingMs, out EndPointId endPointId)
         {
             pingMs = 0;
+            endPointId = EndPointId.InvalidIdentityId;
             try
             {
                 client = new TcpClient();
@@ -58,6 +61,7 @@ namespace NetworkingLib
                 isConnected = true;
                 Ping ping = new Ping();
                 pingMs = ping.Send(ServerIp).RoundtripTime;
+                endPointId = EndPointId.FromSocket(((IPEndPoint)client.Client.LocalEndPoint).Address.ToString(), ((IPEndPoint)client.Client.LocalEndPoint).Port);
                 new Thread(new ThreadStart(TryToRecieve)).Start();
             }
             catch
@@ -65,6 +69,7 @@ namespace NetworkingLib
                 ConnectionLostRaise();
                 return false;
             }
+            this.endPointId = endPointId;
             return true;
         }
 
@@ -204,15 +209,7 @@ namespace NetworkingLib
             OnConnectionLostEvent?.Invoke(null, ServerPort);
         }
 
-        public int GetPort()
-        {
-            return ((IPEndPoint)client.Client.LocalEndPoint).Port;
-        }
-
-        public string GetAdress()
-        {
-            return ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString();
-        }
+        
 
         public void Disconnect()
         {
