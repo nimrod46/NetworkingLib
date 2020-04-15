@@ -233,7 +233,7 @@ namespace NetworkingLib
 
         public void Broadcast(object[] args, params EndPointId[] identityIds)
         {
-            List<EndPointId> idsList = null;
+            List<EndPointId> idsList;
             if (identityIds == null)
             {
                 idsList = new List<EndPointId>();
@@ -251,7 +251,6 @@ namespace NetworkingLib
             TcpClient client = null;
             EndPointId id = EndPointId.InvalidIdentityId;
             try
-
             {
                 byte[] b = Encoding.UTF8.GetBytes(data + packetSplitter.ToString());
                 foreach (var idAndClient in clients)
@@ -317,10 +316,13 @@ namespace NetworkingLib
 
         private void ConnectionLostRaise(EndPointId id, TcpClient client)
         {
-            Console.WriteLine("An unexpected disconnection, source: " + ((IPEndPoint)client.Client.RemoteEndPoint).ToString());
-            clients.Remove(id);
-            lobbyClients.Remove(id);
-            OnClientDisconnectedEvent?.Invoke(id);
+            if (clients.ContainsKey(id) || lobbyClients.ContainsKey(id))
+            {
+                Console.WriteLine("An unexpected disconnection, source: " + ((IPEndPoint)client.Client.RemoteEndPoint).ToString());
+                clients.Remove(id);
+                lobbyClients.Remove(id);
+                OnClientDisconnectedEvent?.Invoke(id);
+            }
         }
     }
 }
