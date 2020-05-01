@@ -167,13 +167,13 @@ namespace NetworkingLib
                     client = tcpListener.AcceptTcpClient();
                     string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
                     int port = ((IPEndPoint)client.Client.RemoteEndPoint).Port;
-                    EndPointId identityId = EndPointId.FromSocket(ip, port);
-                    clients.Add(identityId, client);
-                    new Thread(new ThreadStart(() => TryToRecieve(identityId, client, ip, port))).Start();
                     Ping p = new Ping();
                     PingReply pInfo = p.Send(((IPEndPoint)client.Client.RemoteEndPoint).Address);
                     ping = pInfo.RoundtripTime;
+                    EndPointId identityId = EndPointId.FromSocket(ip, port);
                     OnConnectionAcceptedEvent?.Invoke(identityId, ping);
+                    clients.Add(identityId, client);
+                    new Thread(new ThreadStart(() => TryToRecieve(identityId, client, ip, port))).Start();
                 }
                 catch
                 {
