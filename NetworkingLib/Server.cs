@@ -75,7 +75,7 @@ namespace NetworkingLib
                 return long.Parse(ipAddress.Replace(".", "") + port.ToString());
             }
 
-            public static EndPointId InvalidIdentityId = new EndPointId(0);
+            public static EndPointId InvalidIdentityId = new EndPointId(-1);
 
             public override bool Equals(object obj)
             {
